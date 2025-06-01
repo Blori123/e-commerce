@@ -36,10 +36,11 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Product updateProduct (ProductDto productDto){
-        Product product= modelMapper.map(productDto, Product.class);
-        product.setCategory(new Category(productDto.getCategoryId()));
-        return productRepository.save(product);
+    public Product updateProduct (ProductDto productDto, Long id){
+        Product existingProduct= productRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        this.modelMapper.map(productDto, existingProduct);
+        return productRepository.save(existingProduct);
 
     }
     public Product getProductById(Long id){

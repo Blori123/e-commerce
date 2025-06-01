@@ -20,7 +20,7 @@ public class ProductController {
     @Autowired
     private ProductService productService ;
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<Product> create(@RequestBody ProductDto productDto){
         Product product = productService.createProduct(productDto);
         return new ResponseEntity<>(product, HttpStatus.OK);
@@ -43,14 +43,9 @@ public class ProductController {
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
-    @GetMapping
-    public List<Product>getAllProducts(){
-        return productService.getAllProducts();
-
-    }
-    @PostMapping("/update")
-    public void update(@RequestBody ProductDto productDto){
-        productService.updateProduct(productDto);
+    @PatchMapping("/{id}")
+    public Product update(@RequestBody ProductDto productDto, @PathVariable Long id){
+       return productService.updateProduct(productDto, id);
     }
 
     @GetMapping(value="low-stock")
@@ -65,7 +60,7 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/products")
+    @GetMapping
     public Page<Product> getProductsPaginated(@RequestParam(defaultValue ="0") int page, @RequestParam(defaultValue = "10") int size){
         Pageable pageable= PageRequest.of(page, size);
         return productService.getProductsPaginated(pageable);
